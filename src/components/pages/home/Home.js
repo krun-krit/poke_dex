@@ -17,12 +17,30 @@ export default function Home() {
     })
   },[]);
 
+   
+
   return (
-    <div>
-      <Header />
-      <div className="row">
-       
+    <div> 
+      <Header/>
+      {isDetail.map((item)=>{
+        <div>
+        <Card
+          hoverable
+          style={{ width: 240 }}
+          cover={
+            <img
+              alt="example"
+              src="https://cdn.majorcineplex.com/uploads/content/images/Screen_Shot_2018_11_12_at_12.24.40_PM.0.png"
+            />
+          }
+        >
+          <Meta
+            key={item.id}
+            title={item.name}
+          />
+        </Card>
       </div>
+      })}
     </div>
   );
 }
