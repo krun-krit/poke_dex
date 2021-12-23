@@ -8,25 +8,33 @@ import Item from "antd/lib/list/Item";
 const { Meta } = Card;
 
 export default function Home() {
-  const [isDetail, setIsDetail] = React.useState();
+  const [isData, setIsData] = React.useState();
 
   React.useEffect(() =>{
     axios.get(`https://pokeapi.co/api/v2/pokemon?limit=151`).then((res)=>{
-        setIsDetail(res.data.results)
+        setIsData(res.data.results)
         console.log(res.data.results);
     })
   },[]);
+
+  const result = isData.map((item) =>{
+    <li key={item.id}>{item.name}</li>
+    axios.get(`https://pokeapi.co/api/v2/pokemon/${item.id}`).then((res)=>{
+
+    })
+  })
 
    
 
   return (
     <div> 
+      {isData !== undefined && isData !== null?<div>
       <Header/>
-      {isDetail.map((item)=>{
-        <div>
+      {/* {isDetail.map((item)=>{
+       return <div>
         <Card
           hoverable
-          style={{ width: 240 }}
+          style={{ width: 140 }}
           cover={
             <img
               alt="example"
@@ -37,10 +45,16 @@ export default function Home() {
           <Meta
             key={item.id}
             title={item.name}
+            
           />
         </Card>
       </div>
-      })}
+      })} */}
+      </div>: <div>undifined</div> }
+
+     
     </div>
   );
 }
+
+//https://github.com/rivera1294/pokemon/blob/master/src/App.js
