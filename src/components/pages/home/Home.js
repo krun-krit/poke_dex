@@ -9,18 +9,20 @@ const { Meta } = Card;
 
 export default function Home() {
   const [isData, setIsData] = React.useState();
+  const [isDetail, setIsDetail]  = React.useState();
 
-  React.useEffect(() =>{
+  React.useEffect(async() =>{
     axios.get(`https://pokeapi.co/api/v2/pokemon?limit=151`).then((res)=>{
         setIsData(res.data.results)
         console.log(res.data.results);
     })
+     
   },[]);
 
-  const result = isData.map((item) =>{
-    <li key={item.id}>{item.name}</li>
+  const nextData = isData.map((item) =>{
     axios.get(`https://pokeapi.co/api/v2/pokemon/${item.id}`).then((res)=>{
-
+      setIsDetail(res.data.types[0])
+      
     })
   })
 
@@ -30,7 +32,7 @@ export default function Home() {
     <div> 
       {isData !== undefined && isData !== null?<div>
       <Header/>
-      {/* {isDetail.map((item)=>{
+      {/* {isData.map((item)=>{
        return <div>
         <Card
           hoverable
@@ -58,3 +60,4 @@ export default function Home() {
 }
 
 //https://github.com/rivera1294/pokemon/blob/master/src/App.js
+//https://www.youtube.com/watch?v=HaEB0vdxpdg
