@@ -1,62 +1,56 @@
-import * as React from "react";
-import Header from "../../fragments/Header";
-import { useHistory } from "react-router-dom";
-import axios from "axios";
-import { Card } from "antd";
-import Item from "antd/lib/list/Item";
+import * as React from 'react'
+import Header from '../../fragments/Header'
+import { useHistory } from 'react-router-dom'
+import axios from 'axios'
+import { Card } from 'antd'
+import Item from 'antd/lib/list/Item'
 
-const { Meta } = Card;
+const { Meta } = Card
 
 export default function Home() {
-  const [isData, setIsData] = React.useState();
-  const [isDetail, setIsDetail]  = React.useState();
+  const [isData, setIsData] = React.useState()
 
-  React.useEffect(async() =>{
-    axios.get(`https://pokeapi.co/api/v2/pokemon?limit=151`).then((res)=>{
-        setIsData(res.data.results)
-        console.log(res.data.results);
+  React.useEffect(() => {
+    axios.get(`https://pokeapi.co/api/v2/pokemon?limit=151`).then((res) => {
+      console.log('res', res)
+
+      const pokeList = res.data.results
+      pokeList.forEach((item) => {
+        axios.get(item.url).then((val) => {
+          item.detail = val
+        })
+      })
+      setIsData(pokeList)
+      console.log('pokeList', pokeList)
     })
-     
-  },[]);
-
-  const nextData = isData.map((item) =>{
-    axios.get(`https://pokeapi.co/api/v2/pokemon/${item.id}`).then((res)=>{
-      setIsDetail(res.data.types[0])
-      
-    })
-  })
-
-   
+  }, [])
 
   return (
-    <div> 
-      {isData !== undefined && isData !== null?<div>
-      <Header/>
-      {/* {isData.map((item)=>{
-       return <div>
-        <Card
-          hoverable
-          style={{ width: 140 }}
-          cover={
-            <img
-              alt="example"
-              src="https://cdn.majorcineplex.com/uploads/content/images/Screen_Shot_2018_11_12_at_12.24.40_PM.0.png"
-            />
-          }
-        >
-          <Meta
-            key={item.id}
-            title={item.name}
-            
-          />
-        </Card>
-      </div>
-      })} */}
-      </div>: <div>undifined</div> }
-
-     
+    <div>
+      {isData !== undefined && isData !== null ? (
+        <div>
+          <Header />
+          {isData.map((item) => {
+            return (
+              <div>
+                <Card
+                  hoverable
+                  style={{ width: 140 }}
+                  cover={
+                    <img alt="example" src={item.id.sprites.other.dream_world.front_default} />
+                  }
+                >
+                  <Meta key={item.id} title={item.name} description={item.url} />
+                </Card>
+              </div>
+            )
+          })}
+        </div>
+      ) : (
+        <div>undifined</div>
+      )}
     </div>
-  );
+  )
 }
 
 //https://github.com/rivera1294/pokemon/blob/master/src/App.js
