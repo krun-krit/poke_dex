@@ -8,36 +8,47 @@ import Item from 'antd/lib/list/Item'
 const { Meta } = Card
 
 export default function Home() {
-  const [isData, setIsData] = React.useState()
+  const [isData, setIsData] = React.useState([])
 
   React.useEffect(() => {
-    axios.get(`https://pokeapi.co/api/v2/pokemon?limit=151`).then((res) => {
-      console.log('res', res)
-
-      const pokeList = res.data.results
-      pokeList.forEach((item) => {
-        axios.get(item.url).then((val) => {
-          item.detail = val
-        })
+    async function callApi() {
+      let result = await axios.get('https://pokeapi.co/api/v2/pokemon?limit=151%27')
+      let newArray = []
+      result.data.results.forEach(async (element) => {
+        let obj = {}
+        obj = element
+        let result2 = await axios.get(element.url)
+        obj.detail = result2.data
+        // console.log(`obj`, obj)
+        newArray.push(obj)
+        let newArr = isData
+        newArr.push(obj)
+        setIsData([...isData, newArr])
       })
-      setIsData(pokeList)
-      console.log('pokeList', pokeList)
-    })
+    }
+    callApi()
   }, [])
 
+  console.log('item', isData)
   return (
     <div>
-      {isData !== undefined && isData !== null ? (
+      {console.log(`data`, isData && isData[0])}
+      {isData && isData[0] ? (
         <div>
           <Header />
+
           {isData.map((item) => {
+            console.log('tt', item)
             return (
               <div>
                 <Card
                   hoverable
                   style={{ width: 140 }}
                   cover={
-                    <img alt="example" src={item.id.sprites.other.dream_world.front_default} />
+                    <img
+                      alt="example"
+                      src={`https://img.pokemondb.net/artwork/large/${item.name}.jpg`}
+                    />
                   }
                 >
                   <Meta key={item.id} title={item.name} description={item.url} />
